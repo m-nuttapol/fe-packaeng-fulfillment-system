@@ -3,11 +3,18 @@ version: "3.8"
 services:
   frontend:
     build:
-      context: .  # ✅ Ensure it's pointing to the correct folder
+      context: .  # Ensure this is correct
     ports:
       - "3000:80"
+    #remove volumns out
+    volumes:
+      - ./frontend:/app  # Mounts your local frontend folder inside the container
+      - /app/node_modules  # Prevents overwriting node_modules inside the container
     environment:
       - REACT_APP_BACKEND_URL=http://product-service:5123/api/products
+      #remove volumns out
+      - CHOKIDAR_USEPOLLING=true  # Enables file watching inside Docker
+
     networks:
       - fulfillment-network
 

@@ -1,45 +1,32 @@
-import React, { useEffect, useState } from "react";
-import { getProducts, addProduct } from "../services/api";
+import React, { useState, useEffect } from "react";
 
 const ProductList = () => {
-    const [products, setProducts] = useState([]);
-    const [newProduct, setNewProduct] = useState({ name: "", price: "" });
+  const [products, setProducts] = useState([]);
 
-    useEffect(() => {
-        getProducts().then(setProducts);
-    }, []);
+  useEffect(() => {
+    // Fetch data from backend API
+    fetch("http://localhost:5123/api/products")
+      .then((response) => response.json())
+      .then((data) => setProducts(data))
+      .catch((error) => console.error("Error fetching products:", error));
+  }, []);
 
-    const handleAddProduct = async () => {
-        const addedProduct = await addProduct(newProduct);
-        setProducts([...products, addedProduct]);
-        setNewProduct({ name: "", price: "" });
-    };
-
-    return (
-        <div>
-            <h2>Product List</h2>
-            <ul>
-                {products.map((p) => (
-                    <li key={p.id}>{p.name} - ${p.price}</li>
-                ))}
-            </ul>
-
-            <h3>Add Product</h3>
-            <input
-                type="text"
-                placeholder="Name"
-                value={newProduct.name}
-                onChange={(e) => setNewProduct({ ...newProduct, name: e.target.value })}
-            />
-            <input
-                type="number"
-                placeholder="Price"
-                value={newProduct.price}
-                onChange={(e) => setNewProduct({ ...newProduct, price: e.target.value })}
-            />
-            <button onClick={handleAddProduct}>Add</button>
-        </div>
-    );
+  return (
+    <div>
+      <h2>Available Products</h2>
+      <ul>
+        {products.length > 0 ? (
+          products.map((product) => (
+            <li key={product.id}>
+              {product.name} - ${product.price}
+            </li>
+          ))
+        ) : (
+          <p>Loading products...</p>
+        )}
+      </ul>
+    </div>
+  );
 };
 
 export default ProductList;
