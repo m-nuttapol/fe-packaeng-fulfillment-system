@@ -1,0 +1,16 @@
+version: "3.8"
+
+services:
+  frontend:
+    build:
+      context: .  # ✅ Ensure it's pointing to the correct folder
+    ports:
+      - "3000:80"
+    environment:
+      - REACT_APP_BACKEND_URL=http://product-service:5123/api/products
+    networks:
+      - fulfillment-network
+
+networks:
+  fulfillment-network:
+    external: true  # ✅ Use the existing backend network
